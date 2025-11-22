@@ -1,0 +1,38 @@
+# --- Node / React (frontend) -----------------
+node_modules/
+dist/
+build/
+.vite/
+
+# --- Python / FastAPI (backend) --------------
+venv/
+__pycache__/
+*.pyc
+
+# --- Environment Variables -------------------
+.env
+.env.local
+.env.production
+.env.development
+firebase-adminsdk.json
+
+# --- Firebase --------------------------------
+firebase-debug.log
+.firestore/
+.firebase/
+
+# --- Vercel / Deployment ---------------------
+.vercel/
+.next/
+out/
+
+# --- OS / Editor Stuff -----------------------
+.DS_Store
+Thumbs.db
+.vscode/
+
+# --- Vector DB (Chroma local storage) --------
+backend/app/vectordb/chroma/
+
+# --- Logs ------------------------------------
+*.log
