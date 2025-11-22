@@ -36,3 +36,6 @@ backend/app/vectordb/chroma/
 
 # --- Logs ------------------------------------
 *.log
+
+
+frontend/src/firebase/firebaseConfig.ts
