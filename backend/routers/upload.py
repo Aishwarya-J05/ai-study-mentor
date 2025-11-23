@@ -1,52 +1,48 @@
-from fastapi import APIRouter, UploadFile, File
-from fastapi.responses import JSONResponse
-import os
-import uuid
-from services.pdf_reader import extract_text_from_pdf
-from services.text_splitter import split_into_chunks
-from services.embedder import generate_embeddings
-from services.retriever import store_embeddings
+from fastapi import APIRouter, UploadFile, File, HTTPException
+from core.supabase_client import supabase
 from core.firebase_admin import firestore_db
-import shutil
+import uuid
 
 router = APIRouter()
 
-UPLOAD_FOLDER = "temp_uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+BUCKET_NAME = "uploads"   # your supabase bucket
 
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     try:
-        # 1. Save PDF temporarily
-        file_id = str(uuid.uuid4())
-        temp_path = f"{UPLOAD_FOLDER}/{file_id}.pdf"
+        # read file
+        file_bytes = await file.read()
+        ext = file.filename.split(".")[-1]
+        unique_name = f"{uuid.uuid4()}.{ext}"
 
-        with open(temp_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # ---- SUPABASE UPLOAD (CORRECT FOR supabase-py v2) ----
+        res = supabase.storage.from_(BUCKET_NAME).upload(
+            path=unique_name,
+            file=file_bytes,
+            file_options={
+                "content-type": file.content_type
+            }
+        )
 
-        # 2. Extract text
-        text = extract_text_from_pdf(temp_path)
+        if res is None:
+            raise HTTPException(status_code=500, detail="Upload failed (null response).")
 
-        # 3. Split into chunks
-        chunks = split_into_chunks(text)
+        # ---- GET PUBLIC URL ----
+        url = supabase.storage.from_(BUCKET_NAME).get_public_url(unique_name)
 
-        # 4. Generate embeddings for chunks
-        embeddings = generate_embeddings(chunks)
-
-        # 5. Store embeddings in ChromaDB
-        store_embeddings(file_id, chunks, embeddings)
-
-        # 6. Save metadata in Firestore
-        firestore_db.collection("files").document(file_id).set({
-            "fileId": file_id,
-            "name": file.filename,
-            "createdAt": firestore_db.SERVER_TIMESTAMP,
-            "chunkCount": len(chunks),
+        # ---- SAVE METADATA TO FIRESTORE ----
+        firestore_db.collection("uploads").add({
+            "filename": file.filename,
+            "stored_as": unique_name,
+            "url": url,
+            "content_type": file.content_type,
         })
 
-        return JSONResponse({"status": "success", "fileId": file_id})
+        return {
+            "message": "Uploaded successfully",
+            "url": url
+        }
 
     except Exception as e:
-        print("Error:", e)
-        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))

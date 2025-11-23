@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { signInWithGoogle } from "../firebase/auth";
+import { loginWithGoogle } from "../firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -9,7 +9,7 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle();
+      await loginWithGoogle();
       navigate("/");
     } catch (error) {
       console.error(error);

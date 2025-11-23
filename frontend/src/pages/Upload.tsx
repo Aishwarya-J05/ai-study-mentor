@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../api";
 
 export default function Upload() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,34 +13,28 @@ export default function Upload() {
   };
 
   const handleUpload = async () => {
-    if (!file) return alert("Please select a PDF first.");
+    if (!file) return alert("Select a PDF first");
 
     setUploading(true);
     setMessage("");
 
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-      // Your FastAPI backend URL
-      const res = await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        body: formData,
-      });
+    const res = await fetch(`${API_BASE_URL}/upload`, {
+      method: "POST",
+      body: formData,
+    });
 
-      if (!res.ok) {
-        throw new Error("Upload failed");
-      }
+    const data = await res.json();
 
-      const data = await res.json();
-      setMessage("Uploaded and processed successfully!");
-      console.log("Backend response:", data);
-
-    } catch (error) {
-      console.error(error);
-      setMessage("Upload failed");
+    if (!res.ok) {
+      setMessage(data.detail || "Upload failed");
+      setUploading(false);
+      return;
     }
 
+    setMessage(`Uploaded successfully → ${data.url}`);
     setUploading(false);
   };
 
@@ -47,34 +42,13 @@ export default function Upload() {
     <div style={{ padding: "40px" }}>
       <h1>Upload Notes</h1>
 
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={handleSelect}
-        style={{ marginTop: "20px" }}
-      />
+      <input type="file" accept="application/pdf" onChange={handleSelect} />
 
-      <br />
-
-      <button
-        onClick={handleUpload}
-        disabled={uploading}
-        style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          cursor: "pointer",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-        }}
-      >
+      <button onClick={handleUpload} disabled={uploading}>
         {uploading ? "Processing..." : "Upload PDF"}
       </button>
 
-      {message && (
-        <p style={{ marginTop: "20px" }}>
-          {message}
-        </p>
-      )}
+      {message && <p>{message}</p>}
     </div>
   );
 }

@@ -1,24 +1,15 @@
-from core.openai_client import openai_client
+from sentence_transformers import SentenceTransformer
 
-def generate_embeddings(chunks):
+# Load free local embedding model
+model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+def generate_embeddings(chunks: list[str]) -> list[list[float]]:
     """
-    Takes a list of text chunks and returns embeddings for each chunk.
-    Uses OpenAI Embeddings model.
+    Generate vector embeddings for text chunks using a local Transformer model.
     """
-    embeddings = []
-
-    for chunk in chunks:
-        try:
-            response = openai_client.embeddings.create(
-                model="text-embedding-3-small",
-                input=chunk
-            )
-
-            vector = response.data[0].embedding
-            embeddings.append(vector)
-
-        except Exception as e:
-            print("Embedding error:", e)
-            embeddings.append([])
-
-    return embeddings
+    try:
+        embeddings = model.encode(chunks, convert_to_numpy=True).tolist()
+        return embeddings
+    except Exception as e:
+        print("Embedding generation error:", e)
+        return []

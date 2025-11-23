@@ -1,28 +1,24 @@
 import chromadb
 from chromadb.config import Settings
 
-# Create / load persistent ChromaDB
+# Initialize persistent ChromaDB
 client = chromadb.Client(
     Settings(
-        chroma_db_impl="duckdb+parquet",
-        persist_directory="backend/vectordb/chroma"
+        is_persistent=True,
+        persist_directory="backend/vectordb"
     )
 )
 
-# Collection name for storing embeddings
 COLLECTION_NAME = "documents"
 
-# Create collection if not exists
 collection = client.get_or_create_collection(
     name=COLLECTION_NAME,
-    metadata={"hnsw:space": "cosine"}   # cosine similarity
+    metadata={"hnsw:space": "cosine"}
 )
 
-
-def store_embeddings(file_id: str, chunks: list, embeddings: list):
+def store_embeddings(file_id: str, chunks: list[str], embeddings: list[list[float]]):
     """
-    Save embeddings + chunks into ChromaDB for later retrieval.
-    Each chunk is stored as a separate document.
+    Store text chunks + embeddings into ChromaDB.
     """
     try:
         ids = [f"{file_id}_{i}" for i in range(len(chunks))]
@@ -34,7 +30,6 @@ def store_embeddings(file_id: str, chunks: list, embeddings: list):
             metadatas=[{"file_id": file_id}] * len(chunks)
         )
 
-        print("Stored embeddings in ChromaDB:", len(chunks))
-
+        print(f"Stored {len(chunks)} items in ChromaDB")
     except Exception as e:
         print("ChromaDB store error:", e)

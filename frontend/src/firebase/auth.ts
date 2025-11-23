@@ -4,10 +4,5 @@ import { app } from "./firebaseConfig";
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export const signInWithGoogle = () => {
-  return signInWithPopup(auth, googleProvider);
-};
-
-export const logoutUser = () => {
-  return signOut(auth);
-};
+export const loginWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const logoutUser = () => signOut(auth);

@@ -2,19 +2,16 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import os
 
-# Path to your Firebase Admin SDK JSON file
 SERVICE_ACCOUNT_PATH = "firebase-adminsdk.json"
 
-# Initialize Firebase Admin only once
+# Ensure service account exists
+if not os.path.exists(SERVICE_ACCOUNT_PATH):
+    raise FileNotFoundError(f"Firebase Admin JSON not found at: {SERVICE_ACCOUNT_PATH}")
+
+# Initialize Firebase Admin
 if not firebase_admin._apps:
-    if not os.path.exists(SERVICE_ACCOUNT_PATH):
-        raise FileNotFoundError(
-            f"Firebase Admin SDK JSON not found at: {SERVICE_ACCOUNT_PATH}\n"
-            "Download it from Firebase → Project Settings → Service Accounts."
-        )
-
     cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred)  # NO storage bucket here
 
-# Firestore client
+# Firestore client (we still use this)
 firestore_db = firestore.client()
