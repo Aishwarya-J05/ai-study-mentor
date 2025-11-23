@@ -40,3 +40,39 @@ backend/app/vectordb/chroma/
 
 # --- Firebase Config File --------------------
 frontend/src/firebase/firebaseConfig.ts
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Environment Variables
+.env
+*.env
+
+# Supabase keys (EXTREMELY IMPORTANT)
+supabase/
+supabase/.temp
+supabase/.local
+
+# Firebase Admin Credentials
+firebase-adminsdk.json
+serviceAccountKey.json
+*.key.json
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Files
+.DS_Store
+Thumbs.db

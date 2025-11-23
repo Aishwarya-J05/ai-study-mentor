@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+supabase_client.py
+*.env
+.env.local
+.env.development
+.env.production
+*.secret
