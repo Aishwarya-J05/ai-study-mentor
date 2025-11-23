@@ -1,0 +1,5 @@
+echo backend/.env>>.gitignore
+echo backend/firebase-adminsdk.json>>.gitignore
+echo backend/.venv/>>.gitignore
+echo frontend/node_modules/>>.gitignore
+echo frontend/dist/>>.gitignore
