@@ -1,5 +1,18 @@
-echo backend/.env>>.gitignore
-echo backend/firebase-adminsdk.json>>.gitignore
-echo backend/.venv/>>.gitignore
-echo frontend/node_modules/>>.gitignore
-echo frontend/dist/>>.gitignore
+# Backend
+backend/.env
+backend/firebase-adminsdk.json
+backend/.venv/
+backend/__pycache__/
+backend/temp_uploads/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# System
+.DS_Store
+Thumbs.db
+
+# Python cache
+**/__pycache__/
