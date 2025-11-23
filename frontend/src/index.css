@@ -66,3 +66,99 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+/* src/index.css or src/globals.css */
+
+/* Allow Tailwind's at-rules to avoid "Unknown at rule" errors from stylelint */
+ /* stylelint-disable at-rule-no-unknown */
+
+/* stylelint-enable at-rule-no-unknown */
+
+/* Custom fonts for a modern, techy feel (optional, but recommended) */
+/* Example: Import from Google Fonts in your HTML or _app.js/_document.js */
+/* body { font-family: 'Inter', sans-serif; } */
+/* h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; } */
+
+
+/* Keyframes for the background blobs (slightly slower for a dreamier feel) */
+@keyframes blob-slow {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(40px, -60px) scale(1.2);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+}
+
+.animate-blob-slow {
+  animation: blob-slow 12s infinite ease-in-out;
+}
+
+/* --- Animated Grid Background Effect --- */
+.animated-grid {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px; /* Adjust grid cell size */
+  animation: grid-pan 60s linear infinite;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+@keyframes grid-pan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -40px -40px; /* Pan by one grid cell */
+  }
+}
+
+/* Optional: Add custom utility classes if not already in Tailwind config */
+/* In tailwind.config.js, under `extend: { animation: {}, keyframes: {}}` */
+/* keyframes: {
+    'blob-slow': {
+        '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+        '33%': { transform: 'translate(40px, -60px) scale(1.2)' },
+        '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
+    },
+},
+animation: {
+    'blob-slow': 'blob-slow 12s infinite ease-in-out',
+},
+*/
+
+
+/* index.css or globals.css (imported in your app entry) */
+
+
+/* small helper for the hero background */
+.bg-ai-hero {
+  background-color: #050410; /* fallback */
+  background-size: cover;
+  background-position: center;
+}
+
+/* subtle blur utility if not inlined */
+.blur-3xl {
+  filter: blur(80px);
+}
+
+/* if your tailwind config strips backdrop-blur, allow it */
+
+
+html, body {
+  background: #050510;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+
