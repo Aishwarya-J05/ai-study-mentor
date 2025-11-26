@@ -11,7 +11,7 @@ if not os.path.exists(SERVICE_ACCOUNT_PATH):
 # Initialize Firebase Admin
 if not firebase_admin._apps:
     cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
-    firebase_admin.initialize_app(cred)  # NO storage bucket here
+    firebase_admin.initialize_app(cred)
 
 # Firestore client (we still use this)
 firestore_db = firestore.client()

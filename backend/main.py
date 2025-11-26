@@ -1,21 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers.upload import router as upload_router
+
+from routers.chat import router as chat_router
 
 app = FastAPI()
 
-# CORS: allow frontend (Vite) to call backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # in production, replace "*" with Vercel domain
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register routers
-app.include_router(upload_router, prefix="")
-
-@app.get("/")
-def home():
-    return {"message": "AI Study Mentor Backend Running"}
+app.include_router(chat_router)
