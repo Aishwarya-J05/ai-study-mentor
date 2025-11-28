@@ -5,6 +5,22 @@ import { FiSend, FiMic, FiVolume2, FiMenu, FiX } from "react-icons/fi";
 import { GiBrain } from "react-icons/gi";
 import { AuthContext } from "../context/AuthContext";
 
+const MarkdownResponse = ({ text }: { text: string }) => {
+  const formatted = text
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Code blocks
+    .replace(/```([\s\S]*?)```/g, '<pre class="code-block">$1</pre>')
+    // Inline code
+    .replace(/`(.*?)`/g, '<code class="inline-code">$1</code>')
+    // Line breaks
+    .replace(/\n/g, '<br/>');
+
+  return <div dangerouslySetInnerHTML={{ __html: formatted }} />;
+};
+
 // SpeechRecognition types...
 declare global {
   interface Window {
@@ -305,7 +321,9 @@ export default function ChatPage() {
                 className={`message ${m.role}`}
               >
                 <div className="bubble">
-                  <p>{m.text}</p>
+                  <div className="message-text">
+  <MarkdownResponse text={m.text} />
+</div>
                   {m.role === "ai" && (
                     <button onClick={() => speak(m.text)} className="speak-btn">
                       <FiVolume2 size={16} /> Read aloud
@@ -733,6 +751,44 @@ export default function ChatPage() {
   align-items: center;
   justify-content: center;
   transition: all 0.25s ease;
+}
+
+.message-text strong {
+  font-weight: 700;
+  color: #c4b5fd;
+}
+
+.message-text em {
+  font-style: italic;
+  color: #e0c3fc;
+}
+
+.message-text code.inline-code {
+  background: rgba(99, 102, 241, 0.25);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  color: #a5b4fc;
+}
+
+.message-text pre.code-block {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #475569;
+  padding: 16px;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.message-text br {
+  margin-bottom: 8px;
+  display: block;
+  content: "";
 }
 
       `}</style>
